@@ -16,11 +16,11 @@ class ApplicationMain
 	#if !macro
 	public static function main()
 	{
-		lime.system.System.__registerEntryPoint("Bomberman_Project", create);
+		lime.system.System.__registerEntryPoint("BoomerMan", create);
 
 		#if (js && html5)
 		#if (munit || utest)
-		lime.system.System.embed("Bomberman_Project", null, 704, 576);
+		lime.system.System.embed("BoomerMan", null, 704, 576);
 		#end
 		#else
 		create(null);
@@ -35,10 +35,10 @@ class ApplicationMain
 		ManifestResources.init(config);
 		#end
 
-		app.meta["build"] = "4";
+		app.meta["build"] = "3";
 		app.meta["company"] = "HaxeFlixel";
-		app.meta["file"] = "Bomberman_Project";
-		app.meta["name"] = "Bomberman_Project";
+		app.meta["file"] = "BoomerMan";
+		app.meta["name"] = "BoomerMan";
 		app.meta["packageName"] = "com.example.myapp";
 		app.meta["version"] = "0.0.1";
 
@@ -60,7 +60,7 @@ class ApplicationMain
 			minimized: false,
 			parameters: {},
 			resizable: false,
-			title: "Bomberman_Project",
+			title: "BoomerMan",
 			width: 704,
 			x: null,
 			y: null,

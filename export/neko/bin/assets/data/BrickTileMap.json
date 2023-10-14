@@ -1,0 +1,36 @@
+{
+  "ogmoVersion": "3.4.0",
+  "width": 704,
+  "height": 576,
+  "offsetX": 0,
+  "offsetY": 0,
+  "layers": [
+    {
+      "name": "walls",
+      "_eid": "98464260",
+      "offsetX": 0,
+      "offsetY": 0,
+      "gridCellWidth": 32,
+      "gridCellHeight": 32,
+      "gridCellsX": 11,
+      "gridCellsY": 9,
+      "tileset": "New Tileset",
+      "data": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      "exportMode": 0,
+      "arrayMode": 0
+    },
+    {
+      "name": "entities",
+      "_eid": "98464741",
+      "offsetX": 0,
+      "offsetY": 0,
+      "gridCellWidth": 16,
+      "gridCellHeight": 16,
+      "gridCellsX": 0,
+      "gridCellsY": 0,
+      "entities": [
+        {"name": "player", "id": 0, "_eid": "98464882", "x": 320, "y": 256, "originX": 0, "originY": 0}
+      ]
+    }
+  ]
+}

@@ -1,31 +1,34 @@
+package;
+
 import Bomb;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import PlayState;
+
 
 class PlayerCharacter extends FlxSprite {
 	private var isEnemy:Bool; // True when the PlayerCharacter object is to be used as CPU
-	private var bombPool:Array<Bomb>; // Pool of bombs PC can drop
 	private var currentBombIndex:Int; // Index to track bombs from pool
+
+	public var bombsLeft:Int; // Pool of bombs PC can drop
+	public var bombRange:Int; // Bomb explosion range
+	var moveSpeed:Float; // MoveSpeed
+
+	var delta:Int = 64;
 
 	// constructor
 	public function new(x:Float, y:Float, isEnemy:Bool) {
 		super(x, y);
 		this.isEnemy = isEnemy;
 
-		// change hitbox so sprites can navigate map
-		this.height = 56;
-		this.width = 56;
+		//Change scale of the sprite, to match better the tile map
+		this.scale *=0.8;
 
-		this.bombPool = [];
-		this.currentBombIndex = 0;
+		//Starting player conditions
+		bombsLeft = 3;
+		bombRange = 2;
+		moveSpeed = 70;
 
-		// Populate the bomb pool with 10 bombs (i.e PC can drop up to ten bombs before recycling)
-		for (i in 0...10) {
-			var bomb = new Bomb(0, 0);
-			FlxG.state.add(bomb); // Add to global state
-			bomb.kill();
-			bombPool.push(bomb); // add to pool
-		}
 	}
 
 	// function to overwrite update
@@ -46,16 +49,16 @@ class PlayerCharacter extends FlxSprite {
 
 		// Handle arrow key input
 		if (FlxG.keys.pressed.RIGHT) {
-			velocity.x = 100;
+			velocity.x = moveSpeed;
 			animation.play("Right");
 		} else if (FlxG.keys.pressed.LEFT) {
-			velocity.x = -100;
+			velocity.x = -moveSpeed;
 			animation.play("Left");
 		} else if (FlxG.keys.pressed.DOWN) {
-			velocity.y = 100;
+			velocity.y = moveSpeed;
 			animation.play("Forward");
 		} else if (FlxG.keys.pressed.UP) {
-			velocity.y = -100;
+			velocity.y = -moveSpeed;
 			animation.play("Backward");
 		} else {
 			// No arrow keys pressed, set to idle frame based on last movement
@@ -70,29 +73,42 @@ class PlayerCharacter extends FlxSprite {
 
 	// function to drop a bomb at player's current location
 	private function dropBomb():Void {
-		// Get the next available bomb from the pool
-		var bomb:Bomb = bombPool[currentBombIndex];
-		currentBombIndex = (currentBombIndex + 1) % bombPool.length; // Cycle through the bomb pool
-
-		// Move bomb to the player's current position
-		bomb.reset(x + 16, y + 16);
-
-		// activate bomb
-		bomb.dropped();
+		
+		//Checks if is there already a bomb in the tile the player is trying to place a bomb
+		for (obj in PlayState.bombs){ 
+			if(FlxG.overlap(this, obj)){//if there is, the function just returns and do nothing
+				return;
+			}
+		}
+		//Checks if the bomb has bombs left to place
+		if(this.bombsLeft > 0){
+			bombsLeft -= 1; //reduces one bomb from the player's bombs stock
+			FlxG.state.add(new Bomb(Math.floor(this.x/delta)*delta, Math.floor(this.y/delta)*delta, this)); //place a bomb in the tile the player is standing
+		}
 	}
+
+	public function gotExploded(){ //the player get killed in this function, if it was hitten by the trigger of the explosion
+		PlayState.players.splice(PlayState.players.indexOf(this), 1);
+		this.kill();
+	}
+	
 }
 
 class BluePC extends PlayerCharacter {
 	// constructor
 	public function new(x:Float, y:Float, isEnemy:Bool) {
 		super(x, y, isEnemy);
-
 		// load unique animations for blue sprite
+
 		loadGraphic("assets/images/BluePC AllAnim 64x64.png", true, 64, 64);
 		animation.add("Forward", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 12, true);
 		animation.add("Backward", [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23], 12, true);
 		animation.add("Left", [24, 25, 26, 27, 28, 29, 30, 31], 8, true);
 		animation.add("Right", [24, 25, 26, 27, 28, 29, 30, 31], 8, true, true);
+
+		this.height = 12; //adjust the hitboxes
+		this.width = 24;
+		offset.set(20, 45); //adjust the offset of the hitbox with the sprite
 	}
 }
 
@@ -100,12 +116,18 @@ class PurplePC extends PlayerCharacter {
 	// constructor
 	public function new(x:Float, y:Float, isEnemy:Bool) {
 		super(x, y, isEnemy);
-
 		// load unique animations for purple sprite
 		loadGraphic("assets/images/PurplePC AllAnim 64x64.png", true, 64, 64);
 		animation.add("Forward", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 12, true);
 		animation.add("Backward", [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23], 12, true);
 		animation.add("Left", [24, 25, 26, 27, 28, 29, 30, 31], 8, true);
 		animation.add("Right", [24, 25, 26, 27, 28, 29, 30, 31], 8, true, true);
+
+
+		this.height = 12; //adjust the hitboxes
+		this.width = 24;
+		offset.set(20, 45); //adjust the offset of the hitbox with the sprite
 	}
+
+
 }

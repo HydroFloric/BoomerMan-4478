@@ -5,10 +5,16 @@ import flixel.FlxG;
 import flixel.FlxState;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.tile.FlxTilemap;
+import flixel.group.FlxGroup;
+import Bomb;
+
+
 
 class PlayState extends FlxState {
 	private var testPC:BluePC;
-	private var walls:FlxTilemap;
+	public static var walls:FlxTilemap;
+	public static var bombs:Array<Bomb> = [];
+	public static var players:Array<PlayerCharacter> = [];
 
 	override public function create() {
 		super.create();
@@ -24,7 +30,13 @@ class PlayState extends FlxState {
 		// add player character to map
 		testPC = new BluePC(0, 0, false);
 		map.loadEntities(placeEntities, "entities");
+		players.push(testPC);
 		add(testPC);
+
+		
+
+
+		FlxG.debugger.drawDebug = true;
 	}
 
 	override public function update(elapsed:Float) {
@@ -39,4 +51,6 @@ class PlayState extends FlxState {
 			testPC.setPosition(entity.x, entity.y);
 		}
 	}
+
+	
 }
