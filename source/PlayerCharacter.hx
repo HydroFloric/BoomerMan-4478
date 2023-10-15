@@ -39,6 +39,10 @@ class PlayerCharacter extends FlxSprite {
 		{
 			handlePlayerInput();
 		}
+
+		if(!alive){
+			FlxG.camera.fade(doneFadeOut);
+		}
 	}
 
 	// function to control movement based on arrow key input
@@ -90,6 +94,11 @@ class PlayerCharacter extends FlxSprite {
 	public function gotExploded(){ //the player get killed in this function, if it was hitten by the trigger of the explosion
 		PlayState.players.splice(PlayState.players.indexOf(this), 1);
 		this.kill();
+		}
+
+	//function to control changing the game state after the player dies
+	private function doneFadeOut(){
+			FlxG.switchState(new GameOverState());
 	}
 	
 }

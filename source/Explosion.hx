@@ -1,3 +1,5 @@
+
+
 package;
 
 import flixel.FlxSprite;
@@ -18,25 +20,14 @@ class Explosion extends FlxSprite
 	{
         super(x,y);
 
-        trigger.makeGraphic(60, 60, FlxColor.BLUE); //this sprite object(trigger), is used to check if it overlap some other object.
-        trigger.alpha = 0;
-        FlxG.state.add(trigger);
 
-
-        trigger.x = x;
-        trigger.y = y;
-        for (obj in PlayState.bombs){  //go through all bombs objects to check if it will overlap.
-			if(FlxG.overlap(trigger, obj)){  //if trigger overlap with a bomb, it  will detonate the bomb and destroy the inside timer to prevent the bomb exploding two times
-				obj.countdownTimer.destroy();
-                obj.explodeChain(); //trigger the explosion of other bomb
+        //checks if the player are in the same tile as the initial position of the bomb. 
+        for (obj in PlayState.players){ //go through all bombs objects to check if it will overlap(are in the same tile)
+			if(Std.int(obj.x/64) == Std.int(x/64) && Std.int(obj.y/64) == Std.int(y/64)){ //Checks if the player is in the same tile as the explosion.
+                obj.gotExploded(); //kills the player if it is true
 			}
         }
-        for (obj in PlayState.players){ //go through all bombs objects to check if it will overlap.
-			if(FlxG.overlap(trigger, obj)){ //if the trigger overlaps with the player, the function gotExploded will be called.
-                obj.gotExploded(); //if the player overlaped with the trigger, it will call this function.
-			}
-        }
-        explosionEffect(x, y);
+        explosionEffect(x, y, "center");
 
         recursiveExplosionUp(x, y-64, remainingRange);  //change the sprite position to check if is there any object, or wall.
         recursiveExplosionDown(x, y+64, remainingRange);
@@ -44,101 +35,124 @@ class Explosion extends FlxSprite
         recursiveExplosionRight(x+64, y, remainingRange);
 
 	}
+    //explosion go through the y axis
     private function recursiveExplosionUp(x:Float, y:Float, remainingRange:Int){
         if(remainingRange <= 0) return;
         if(!checkTileMapColision(x,y)) return; //this functions returns false if there is an wall in the x and y position, if it is, it will just return.
-        
-        trigger.x = x; //change the sprite position
-        trigger.y = y;
 
         for (obj in PlayState.bombs){ 
-			if(FlxG.overlap(trigger, obj)){//if trigger overlap with a bomb, it  will detonate the bomb and destroy the inside timer to prevent the bomb exploding two times
+			if(Std.int(obj.x/64) == Std.int(x/64) && Std.int(obj.y/64) == Std.int(y/64)){ //Checks if the bomb is in the same tile as the explosion. We get the tile index(x,y) by geting the intenger part of the division of the bomb(obj.x,obj.y)/64 and the explosion(x,y)/64
 				obj.countdownTimer.destroy();
                 obj.explodeChain();
 			}
         }
         for (obj in PlayState.players){ 
-			if(FlxG.overlap(trigger, obj)){//if the trigger overlaps with the player, the function gotExploded will be called.
+			if(Std.int(obj.x/64) == Std.int(x/64) && Std.int(obj.y/64) == Std.int(y/64)){ //Checks if the player is in the same tile as the explosion.
                 obj.gotExploded();
 			}
         }
 
-        explosionEffect(x, y);
+        explosionEffect(x, y, "horizon");
         recursiveExplosionUp(x, y-64, remainingRange-1);
 
     }
+    //explosion go through the y axis
     private function recursiveExplosionDown(x:Float, y:Float, remainingRange){
         if(remainingRange <= 0) return;
         if(!checkTileMapColision(x,y)) return;
-        trigger.x = x;
-        trigger.y = y;
+
+
         for (obj in PlayState.bombs){ 
-			if(FlxG.overlap(trigger, obj)){
+			if(Std.int(obj.x/64) == Std.int(x/64) && Std.int(obj.y/64) == Std.int(y/64)){
 				obj.countdownTimer.destroy();
                 obj.explodeChain();
 			}
         }
         for (obj in PlayState.players){ 
-			if(FlxG.overlap(trigger, obj)){
+			if(Std.int(obj.x/64) == Std.int(x/64) && Std.int(obj.y/64) == Std.int(y/64)){
                 obj.gotExploded();
 			}
         }
 
-        explosionEffect(x, y);
+        explosionEffect(x, y, "horizon");
         recursiveExplosionDown(x, y+64, remainingRange-1);
     }
+    //explosion go through the x axis
     private function recursiveExplosionLeft(x:Float, y:Float, remainingRange){
         if(remainingRange <= 0) return;
         if(!checkTileMapColision(x,y)) return;
-        trigger.x = x;
-        trigger.y = y;
+
+
         for (obj in PlayState.bombs){ 
-			if(FlxG.overlap(trigger, obj)){
+			if(Std.int(obj.x/64) == Std.int(x/64) && Std.int(obj.y/64) == Std.int(y/64)){
 				obj.countdownTimer.destroy();
                 obj.explodeChain();
 			}
         }
         for (obj in PlayState.players){ 
-			if(FlxG.overlap(trigger, obj)){
+			if(Std.int(obj.x/64) == Std.int(x/64) && Std.int(obj.y/64) == Std.int(y/64)){
                 obj.gotExploded();
 			}
         }
 
-        explosionEffect(x, y);
+        explosionEffect(x, y, "vert");
         recursiveExplosionLeft(x-64, y, remainingRange-1);
 
     }
+     //explosion go through the x axis
     private function recursiveExplosionRight(x:Float, y:Float, remainingRange){
         if(remainingRange <= 0) return;
         if(!checkTileMapColision(x,y)) return;
-        trigger.x = x;
-        trigger.y = y;
+
         for (obj in PlayState.bombs){ 
-			if(FlxG.overlap(trigger, obj)){
+			if(Std.int(obj.x/64) == Std.int(x/64) && Std.int(obj.y/64) == Std.int(y/64)){
 				obj.countdownTimer.destroy();
                 obj.explodeChain();
 			}
         }
         for (obj in PlayState.players){ 
-			if(FlxG.overlap(trigger, obj)){
+			if(Std.int(obj.x/64) == Std.int(x/64) && Std.int(obj.y/64) == Std.int(y/64)){
                 obj.gotExploded();
 			}
         }
 
-        explosionEffect(x, y);
+        explosionEffect(x, y, "vert");
         recursiveExplosionRight(x+64, y, remainingRange-1);
 
     }
 
     //this functions makes an animation for the explosions
-    private function explosionEffect(x:Float, y:Float){
-        var changeThisForAnActuallySpriteAnimation:FlxSprite = new FlxSprite(x,y).makeGraphic(64, 64, FlxColor.BLUE);
-        FlxG.state.add(changeThisForAnActuallySpriteAnimation);
+    private function explosionEffect(x:Float, y:Float, dir:String){
+
+        //create the animations for vertical and horizontal explosions
+        var shockAnim:FlxSprite = new FlxSprite(x,y).loadGraphic("assets/images/explosionTiles.png", true, 64, 64);
+        shockAnim.animation.add("vert", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], 20, true);
+        shockAnim.animation.add("horizon", [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27], 20, true);
+        FlxG.state.add(shockAnim);
+
+        //center does not have directional animation
+        var centerGraphic:FlxSprite = new FlxSprite(x, y);
+
+        //decide which animation to play in each tile
+        if(dir == "vert"){
+            shockAnim.animation.play("vert");
+        }
+        else if(dir == "horizon"){
+            shockAnim.animation.play("horizon");
+        }
+        else
+        {
+            //static asset for center of explosion
+            centerGraphic.makeGraphic(64, 64, 0xFFD7C639);
+            FlxG.state.add(centerGraphic);
+        }
         
+        //animation plays for one second (20 frames)
         var myTimer = new FlxTimer();
         myTimer.start(1.0, (timer:FlxTimer) ->
         {
-            changeThisForAnActuallySpriteAnimation.destroy();
+            shockAnim.destroy();
+            centerGraphic.destroy();
         });
     }
 

@@ -15,6 +15,7 @@ class PlayState extends FlxState {
 	public static var walls:FlxTilemap;
 	public static var bombs:Array<Bomb> = [];
 	public static var players:Array<PlayerCharacter> = [];
+	var toAddMenu:Bool = false;  // Flag to determine whether to add the game over menu
 
 	override public function create() {
 		super.create();
@@ -33,9 +34,8 @@ class PlayState extends FlxState {
 		players.push(testPC);
 		add(testPC);
 
-		
-
-
+		//hide mouse cursor
+		FlxG.mouse.visible = false;
 		FlxG.debugger.drawDebug = true;
 	}
 
@@ -52,5 +52,4 @@ class PlayState extends FlxState {
 		}
 	}
 
-	
 }
