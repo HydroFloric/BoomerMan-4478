@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxObject;
 import PlayerCharacter;
 import flixel.FlxG;
 import flixel.FlxState;
@@ -12,9 +13,11 @@ import Bomb;
 
 class PlayState extends FlxState {
 	private var testPC:BluePC;
+	private var testPC2:PurplePC;
 	public static var walls:FlxTilemap;
 	public static var bombs:Array<Bomb> = [];
 	public static var players:Array<PlayerCharacter> = [];
+	public var playerList:FlxTypedGroup<PlayerCharacter>; //Group containing active player objects
 	var toAddMenu:Bool = false;  // Flag to determine whether to add the game over menu
 
 	override public function create() {
@@ -29,10 +32,15 @@ class PlayState extends FlxState {
 		add(walls);
 
 		// add player character to map
+		playerList = new FlxTypedGroup();
 		testPC = new BluePC(0, 0, false);
+		testPC2 = new PurplePC(0, 0, false);
+		playerList.add(testPC);
+		playerList.add(testPC2);
+		add(playerList);
+		playerList.forEach(players.push, false);
+
 		map.loadEntities(placeEntities, "entities");
-		players.push(testPC);
-		add(testPC);
 
 		//hide mouse cursor
 		FlxG.mouse.visible = false;
@@ -41,14 +49,16 @@ class PlayState extends FlxState {
 
 	override public function update(elapsed:Float) {
 		super.update(elapsed);
-		testPC.update(elapsed);
-		FlxG.collide(testPC, walls);
+		playerList.update(elapsed);
+		FlxG.collide(playerList, walls);
 	}
 
 	// function to place entities according to entity layer from tilemap
 	function placeEntities(entity:EntityData) {
 		if (entity.name == "player") {
-			testPC.setPosition(entity.x, entity.y);
+			for (i in 0...players.length) {
+				players[i].setPosition(entity.x,entity.y);
+			}
 		}
 	}
 

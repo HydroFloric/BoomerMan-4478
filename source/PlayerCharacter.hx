@@ -12,8 +12,10 @@ class PlayerCharacter extends FlxSprite {
 
 	public var bombsLeft:Int; // Pool of bombs PC can drop
 	public var bombRange:Int; // Bomb explosion range
-	var moveSpeed:Float; // MoveSpeed
 
+	public var playerNum:Int; //When multiple players are active this differentiates them.
+
+	var moveSpeed:Float; // MoveSpeed
 	var delta:Int = 64;
 
 	// constructor
@@ -51,17 +53,17 @@ class PlayerCharacter extends FlxSprite {
 		velocity.x = 0;
 		velocity.y = 0;
 
-		// Handle arrow key input
-		if (FlxG.keys.pressed.RIGHT) {
+		if(this.playerNum == 0){// Handle WASD key input
+		if (FlxG.keys.pressed.D) {
 			velocity.x = moveSpeed;
 			animation.play("Right");
-		} else if (FlxG.keys.pressed.LEFT) {
+		} else if (FlxG.keys.pressed.A) {
 			velocity.x = -moveSpeed;
 			animation.play("Left");
-		} else if (FlxG.keys.pressed.DOWN) {
+		} else if (FlxG.keys.pressed.S) {
 			velocity.y = moveSpeed;
 			animation.play("Forward");
-		} else if (FlxG.keys.pressed.UP) {
+		} else if (FlxG.keys.pressed.W) {
 			velocity.y = -moveSpeed;
 			animation.play("Backward");
 		} else {
@@ -72,7 +74,30 @@ class PlayerCharacter extends FlxSprite {
 		// handle spacebar to drop bombs
 		if (FlxG.keys.justPressed.SPACE) {
 			dropBomb();
-		}
+		}}
+
+		else if(this.playerNum == 1){// Handle arrow key input
+			if (FlxG.keys.pressed.RIGHT) {
+				velocity.x = moveSpeed;
+				animation.play("Right");
+			} else if (FlxG.keys.pressed.LEFT) {
+				velocity.x = -moveSpeed;
+				animation.play("Left");
+			} else if (FlxG.keys.pressed.DOWN) {
+				velocity.y = moveSpeed;
+				animation.play("Forward");
+			} else if (FlxG.keys.pressed.UP) {
+				velocity.y = -moveSpeed;
+				animation.play("Backward");
+			} else {
+				// No arrow keys pressed, set to idle frame based on last movement
+				animation.stop();
+			}
+	
+			// handle spacebar to drop bombs
+			if (FlxG.keys.justPressed.SHIFT) {
+				dropBomb();
+			}}
 	}
 
 	// function to drop a bomb at player's current location
@@ -107,8 +132,9 @@ class BluePC extends PlayerCharacter {
 	// constructor
 	public function new(x:Float, y:Float, isEnemy:Bool) {
 		super(x, y, isEnemy);
-		// load unique animations for blue sprite
+		playerNum = 0;
 
+		// load unique animations for blue sprite
 		loadGraphic("assets/images/BluePC AllAnim 64x64.png", true, 64, 64);
 		animation.add("Forward", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 12, true);
 		animation.add("Backward", [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23], 12, true);
@@ -125,6 +151,8 @@ class PurplePC extends PlayerCharacter {
 	// constructor
 	public function new(x:Float, y:Float, isEnemy:Bool) {
 		super(x, y, isEnemy);
+		playerNum = 1;
+
 		// load unique animations for purple sprite
 		loadGraphic("assets/images/PurplePC AllAnim 64x64.png", true, 64, 64);
 		animation.add("Forward", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 12, true);
