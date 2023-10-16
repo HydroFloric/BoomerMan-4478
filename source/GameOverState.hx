@@ -23,6 +23,7 @@ class GameOverState extends FlxState
 		// Create a button to play again
         var playAgainButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 + 20, "Play again", playAgainCallback);
         playAgainButton.width = FlxG.width / 2;
+		playAgainButton.updateHitbox();
         add(playAgainButton);
 	}
 
