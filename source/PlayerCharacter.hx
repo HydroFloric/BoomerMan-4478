@@ -1,5 +1,6 @@
 package;
 
+import flixel.math.FlxVelocity;
 import Bomb;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -14,6 +15,7 @@ class PlayerCharacter extends FlxSprite {
 	public var bombRange:Int; // Bomb explosion range
 
 	public var playerNum:Int; //When multiple players are active this differentiates them.
+							 //Defaults to -1 for enemies and parent class PlayerCharacter
 
 	var moveSpeed:Float; // MoveSpeed
 	var delta:Int = 64;
@@ -22,6 +24,7 @@ class PlayerCharacter extends FlxSprite {
 	public function new(x:Float, y:Float, isEnemy:Bool) {
 		super(x, y);
 		this.isEnemy = isEnemy;
+		playerNum = -1; 
 
 		//Change scale of the sprite, to match better the tile map
 		this.scale *=0.8;
@@ -41,13 +44,9 @@ class PlayerCharacter extends FlxSprite {
 		{
 			handlePlayerInput();
 		}
-
-		if(!alive){
-			FlxG.camera.fade(doneFadeOut);
-		}
 	}
 
-	// function to control movement based on arrow key input
+	// function to control movement based on arrow key/wasd input
 	private function handlePlayerInput():Void {
 		// intial velocity = 0
 		velocity.x = 0;
@@ -117,12 +116,27 @@ class PlayerCharacter extends FlxSprite {
 	}
 
 	public function gotExploded(){ //the player get killed in this function, if it was hitten by the trigger of the explosion
-		PlayState.players.splice(PlayState.players.indexOf(this), 1);
 		this.kill();
+		if(PlayState.playerList.countLiving() <= 0){
+			
+			FlxG.camera.fade(gameOver);
+		}
+		else if(PlayState.playerMode == 2 && PlayState.playerList.countLiving() <= 1){
+			FlxG.camera.fade(gameOver);
+		}
 		}
 
 	//function to control changing the game state after the player dies
-	private function doneFadeOut(){
+	private function gameOver(){
+			if(PlayState.playerMode == 2){
+				var playerTmp:PlayerCharacter = PlayState.playerList.getFirstAlive();
+				if(playerTmp == null){
+					PlayState.winningPlayer = -1;
+				}
+				else{
+					PlayState.winningPlayer = playerTmp.playerNum;
+				}
+			}
 			FlxG.switchState(new GameOverState());
 	}
 	
@@ -165,6 +179,71 @@ class PurplePC extends PlayerCharacter {
 		this.width = 24;
 		offset.set(20, 45); //adjust the offset of the hitbox with the sprite
 	}
+}
 
+class BasicEnemy extends PlayerCharacter{
+	public function new(x:Float, y:Float, isEnemy:Bool) {
+		super(x, y, isEnemy);
+		playerNum = -1;
+
+		// load unique animations for purple sprite
+		loadGraphic("assets/images/RedPC AllAnim 64x64.png", true, 64, 64);
+		animation.add("Forward", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 12, true);
+		animation.add("Backward", [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23], 12, true);
+		animation.add("Left", [24, 25, 26, 27, 28, 29, 30, 31], 8, true);
+		animation.add("Right", [24, 25, 26, 27, 28, 29, 30, 31], 8, true, true);
+
+
+		this.height = 12; //adjust the hitboxes
+		this.width = 24;
+		offset.set(20, 45); //adjust the offset of the hitbox with the sprite
+	}
+
+    override public function update(elapsed:Float):Void {
+        super.update(elapsed);
+    
+        if (isEnemy) {
+            handleEnemyBehavior();
+        } else {
+            handlePlayerInput();
+        }
+    
+        if(!alive) {
+            FlxG.camera.fade(gameOver);
+        }
+    }
+    
+    private function handleEnemyBehavior():Void {
+        // Randomly change direction every few seconds
+        if (FlxG.random.float() < 0.01) {
+            velocity.x = (FlxG.random.bool()) ? moveSpeed : -moveSpeed;
+            velocity.y = (FlxG.random.bool()) ? moveSpeed : -moveSpeed;
+        }
+		for(obj in PlayState.bombs){
+			if((obj.x + (64*bombRange) > this.x || obj.x - (64*bombRange) < this.x)|| (obj.y + (64*bombRange) > this.y || obj.y - (64*bombRange) < this.y)){
+				FlxVelocity.moveTowardsObject(this, obj,moveSpeed);
+				this.velocity.x = -this.velocity.x;
+				this.velocity.y = -this.velocity.y;
+			}
+		}
+    
+        // Randomly drop a bomb
+        if (FlxG.random.float() < 0.01) {
+            dropBomb();
+        }
+    
+        // Update animation based on movement direction
+        if (velocity.x > 0) {
+            animation.play("Right");
+        } else if (velocity.x < 0) {
+            animation.play("Left");
+        } else if (velocity.y > 0) {
+            animation.play("Forward");
+        } else if (velocity.y < 0) {
+            animation.play("Backward");
+        } else {
+            animation.stop();
+        }
+    }
 
 }

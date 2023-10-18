@@ -19,15 +19,30 @@ class GameStartState extends FlxState
             titleText.setFormat(null, 24, 0xFFFFFF, "center");
             add(titleText);
     
-            // Create a button to play again
-            var startButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 + 20, "Begin!", startCall);
-            startButton.width = FlxG.width / 2;
-            startButton.updateHitbox();
-            add(startButton);
+            // Create the start buttons
+            //1P mode
+            var startButton1P = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 + 20, "1 Player Mode!", startCall1P);
+            startButton1P.width = FlxG.width / 2;
+            startButton1P.x -= startButton1P.width/4;
+            startButton1P.updateHitbox();
+            add(startButton1P);
+
+            //2P mode
+            var startButton2P = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 + 20, "2 Player Mode!", startCall2P);
+            startButton2P.width = FlxG.width / 2;
+            startButton2P.x += startButton2P.width/4;
+            startButton2P.updateHitbox();
+            add(startButton2P);
         }
     
-        function startCall()
+        function startCall1P()
         {
+            PlayState.playerMode = 1;
             FlxG.switchState(new PlayState());
         }
+        function startCall2P()
+            {
+                PlayState.playerMode = 2;
+                FlxG.switchState(new PlayState());
+            }
 }

@@ -20,9 +20,8 @@ class Explosion extends FlxSprite
 	{
         super(x,y);
 
-
         //checks if the player are in the same tile as the initial position of the bomb. 
-        for (obj in PlayState.players){ //go through all bombs objects to check if it will overlap(are in the same tile)
+        for (obj in PlayState.playerList){ //go through all bombs objects to check if it will overlap(are in the same tile)
 			if(Std.int(obj.x/64) == Std.int(x/64) && Std.int(obj.y/64) == Std.int(y/64)){ //Checks if the player is in the same tile as the explosion.
                 obj.gotExploded(); //kills the player if it is true
 			}
@@ -46,7 +45,7 @@ class Explosion extends FlxSprite
                 obj.explodeChain();
 			}
         }
-        for (obj in PlayState.players){ 
+        for (obj in PlayState.playerList){ 
 			if(Std.int(obj.x/64) == Std.int(x/64) && Std.int(obj.y/64) == Std.int(y/64)){ //Checks if the player is in the same tile as the explosion.
                 obj.gotExploded();
 			}
@@ -68,7 +67,7 @@ class Explosion extends FlxSprite
                 obj.explodeChain();
 			}
         }
-        for (obj in PlayState.players){ 
+        for (obj in PlayState.playerList){ 
 			if(Std.int(obj.x/64) == Std.int(x/64) && Std.int(obj.y/64) == Std.int(y/64)){
                 obj.gotExploded();
 			}
@@ -89,7 +88,7 @@ class Explosion extends FlxSprite
                 obj.explodeChain();
 			}
         }
-        for (obj in PlayState.players){ 
+        for (obj in PlayState.playerList){ 
 			if(Std.int(obj.x/64) == Std.int(x/64) && Std.int(obj.y/64) == Std.int(y/64)){
                 obj.gotExploded();
 			}
@@ -110,7 +109,7 @@ class Explosion extends FlxSprite
                 obj.explodeChain();
 			}
         }
-        for (obj in PlayState.players){ 
+        for (obj in PlayState.playerList){ 
 			if(Std.int(obj.x/64) == Std.int(x/64) && Std.int(obj.y/64) == Std.int(y/64)){
                 obj.gotExploded();
 			}
@@ -147,9 +146,9 @@ class Explosion extends FlxSprite
             FlxG.state.add(centerGraphic);
         }
         
-        //animation plays for one second (20 frames)
+        //animation plays for one quarter-second (15 frames)
         var myTimer = new FlxTimer();
-        myTimer.start(1.0, (timer:FlxTimer) ->
+        myTimer.start(0.25, (timer:FlxTimer) ->
         {
             shockAnim.destroy();
             centerGraphic.destroy();

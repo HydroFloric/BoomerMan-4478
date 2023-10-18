@@ -12,12 +12,14 @@ import Bomb;
 
 
 class PlayState extends FlxState {
+	public static var playerMode = 0; //Indicates selected playermode (1P=1,2P=2), 0 by default.
+	public static var winningPlayer = 0; //Indicates the winning player in 2P mode. Used by GameOverState to display the correct text.
 	private var testPC:BluePC;
 	private var testPC2:PurplePC;
+	private var testNPC:BasicEnemy;
 	public static var walls:FlxTilemap;
 	public static var bombs:Array<Bomb> = [];
-	public static var players:Array<PlayerCharacter> = [];
-	public var playerList:FlxTypedGroup<PlayerCharacter>; //Group containing active player objects
+	public static var playerList:FlxTypedGroup<PlayerCharacter> = null; //Group containing active player objects
 	var toAddMenu:Bool = false;  // Flag to determine whether to add the game over menu
 
 	override public function create() {
@@ -34,11 +36,18 @@ class PlayState extends FlxState {
 		// add player character to map
 		playerList = new FlxTypedGroup();
 		testPC = new BluePC(0, 0, false);
-		testPC2 = new PurplePC(0, 0, false);
 		playerList.add(testPC);
-		playerList.add(testPC2);
+
+		//If 2P mode is selected load the second player
+		if(PlayState.playerMode == 2){
+			testPC2 = new PurplePC(0, 0, false);
+			playerList.add(testPC2);
+		}
+		else{
+			testNPC = new BasicEnemy(0,0,true);
+			playerList.add(testNPC);
+		}
 		add(playerList);
-		playerList.forEach(players.push, false);
 
 		map.loadEntities(placeEntities, "entities");
 
@@ -56,10 +65,20 @@ class PlayState extends FlxState {
 	// function to place entities according to entity layer from tilemap
 	function placeEntities(entity:EntityData) {
 		if (entity.name == "player") {
-			for (i in 0...players.length) {
-				players[i].setPosition(entity.x,entity.y);
+			for (obj in playerList) {
+				obj.setPosition(entity.x+(32-(obj.width/2)),entity.y+(64-(obj.height)));
+				
+				if(PlayState.playerMode == 2){
+					if(obj.playerNum == 0){
+						obj.x -= 64*2;
+					}
+					else if(obj.playerNum == 1){
+						obj.x += 64*2;
+					}
+				}
 			}
 		}
 	}
+	
 
 }
