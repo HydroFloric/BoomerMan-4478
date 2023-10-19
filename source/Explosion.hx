@@ -146,9 +146,9 @@ class Explosion extends FlxSprite
             FlxG.state.add(centerGraphic);
         }
         
-        //animation plays for one quarter-second (15 frames)
+        //animation plays for half a second (10 frames)
         var myTimer = new FlxTimer();
-        myTimer.start(0.25, (timer:FlxTimer) ->
+        myTimer.start(0.5, (timer:FlxTimer) ->
         {
             shockAnim.destroy();
             centerGraphic.destroy();
