@@ -1,5 +1,8 @@
 package;
 
+import flixel.FlxObject;
+import flixel.math.FlxMath;
+import haxe.rtti.CType.Rights;
 import flixel.math.FlxVelocity;
 import Bomb;
 import flixel.FlxG;
@@ -31,7 +34,7 @@ class PlayerCharacter extends FlxSprite {
 
 		//Starting player conditions
 		bombsLeft = 3;
-		bombRange = 2;
+		bombRange = 1;
 		moveSpeed = 70;
 
 	}
@@ -117,27 +120,23 @@ class PlayerCharacter extends FlxSprite {
 
 	public function gotExploded(){ //the player get killed in this function, if it was hitten by the trigger of the explosion
 		this.kill();
-		if(PlayState.playerList.countLiving() <= 0){
+		if(PlayState.playerList.countLiving() <= 1){
 			
-			FlxG.camera.fade(gameOver);
-		}
-		else if(PlayState.playerMode == 2 && PlayState.playerList.countLiving() <= 1){
 			FlxG.camera.fade(gameOver);
 		}
 		}
 
 	//function to control changing the game state after the player dies
 	private function gameOver(){
-			if(PlayState.playerMode == 2){
-				var playerTmp:PlayerCharacter = PlayState.playerList.getFirstAlive();
-				if(playerTmp == null){
-					PlayState.winningPlayer = -1;
-				}
-				else{
-					PlayState.winningPlayer = playerTmp.playerNum;
-				}
-			}
-			FlxG.switchState(new GameOverState());
+		var playerTmp:PlayerCharacter = PlayState.playerList.getFirstAlive();
+		if(playerTmp == null){
+			PlayState.winningPlayer = -1;
+		}
+		else{
+			PlayState.winningPlayer = playerTmp.playerNum;
+		}
+	
+		FlxG.switchState(new GameOverState());
 	}
 	
 }
@@ -185,6 +184,7 @@ class BasicEnemy extends PlayerCharacter{
 	public function new(x:Float, y:Float, isEnemy:Bool) {
 		super(x, y, isEnemy);
 		playerNum = -1;
+		bombsLeft = 1;
 
 		// load unique animations for purple sprite
 		loadGraphic("assets/images/RedPC AllAnim 64x64.png", true, 64, 64);
@@ -200,8 +200,7 @@ class BasicEnemy extends PlayerCharacter{
 	}
 
     override public function update(elapsed:Float):Void {
-        super.update(elapsed);
-    
+		super.update(elapsed);
         if (isEnemy) {
             handleEnemyBehavior();
         } else {
@@ -214,23 +213,39 @@ class BasicEnemy extends PlayerCharacter{
     }
     
     private function handleEnemyBehavior():Void {
-        // Randomly change direction every few seconds
-        if (FlxG.random.float() < 0.01) {
-            velocity.x = (FlxG.random.bool()) ? moveSpeed : -moveSpeed;
-            velocity.y = (FlxG.random.bool()) ? moveSpeed : -moveSpeed;
-        }
-		for(obj in PlayState.bombs){
-			if((obj.x + (64*bombRange) > this.x || obj.x - (64*bombRange) < this.x)|| (obj.y + (64*bombRange) > this.y || obj.y - (64*bombRange) < this.y)){
-				FlxVelocity.moveTowardsObject(this, obj,moveSpeed);
-				this.velocity.x = -this.velocity.x;
-				this.velocity.y = -this.velocity.y;
-			}
+		// intial velocity = 0
+		//velocity.x = 0;
+		//velocity.y = 0;
+
+		// Randomly change direction every few seconds
+		if (FlxG.random.float() < 0.01) {
+			velocity.x = (FlxG.random.bool()) ? moveSpeed : -moveSpeed;
+			velocity.y = (FlxG.random.bool()) ? moveSpeed : -moveSpeed;
 		}
-    
-        // Randomly drop a bomb
+
+		// Randomly drop a bomb
         if (FlxG.random.float() < 0.01) {
             dropBomb();
         }
+
+		//Enemies should attempt to keep a safe distance from bombs
+		//TODO: AI keeps getting stuck in corners like an idiot, fix later
+		for(obj in PlayState.bombs){
+			if(FlxMath.distanceBetween(obj, this) <= (64*bombRange) + this.width){
+				if(obj.y < this.y){
+					this.velocity.y = moveSpeed;
+				}
+				else if(obj.y > this.y){
+					this.velocity.x = -moveSpeed;
+				}
+				if(obj.x < this.x){
+					this.velocity.x = moveSpeed;
+				}
+				else if(obj.x > this.x){
+					this.velocity.x = -moveSpeed;
+				}
+			}
+		}
     
         // Update animation based on movement direction
         if (velocity.x > 0) {

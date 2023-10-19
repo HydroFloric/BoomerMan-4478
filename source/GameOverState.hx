@@ -8,6 +8,7 @@ import flixel.text.FlxText;
 
 class GameOverState extends FlxState
 {
+	var winnerText:FlxText;
 	override public function create()
 	{
 		super.create();
@@ -20,15 +21,21 @@ class GameOverState extends FlxState
         gameOverText.setFormat(null, 24, 0xFFFFFF, "center");
         add(gameOverText);
 
+		winnerText = new FlxText(0, FlxG.height / 2 - 10, FlxG.width, "");
+
 		//If 2P mode, display winning player
 		if(PlayState.playerMode == 2){
-			var winnerText = new FlxText(0, FlxG.height / 2 - 10, FlxG.width, PlayState.winningPlayer == 0 ? "Player 1 Wins!" : "Player 2 Wins!");
+			winnerText.text = PlayState.winningPlayer == 0 ? "Player 1 Wins!" : "Player 2 Wins!";
 			if(PlayState.winningPlayer == -1){
 				winnerText.text = "Draw!";
 			}
-			winnerText.setFormat(null, 16, 0xFFFFFF, "center");
-        	add(winnerText);
 		}
+		if(PlayState.playerMode == 1){
+			winnerText.text = PlayState.winningPlayer == -1 ? "You lose!" : "You win!";
+		}
+
+		winnerText.setFormat(null, 16, 0xFFFFFF, "center");
+        add(winnerText);
 
 		//Create a button to play again
         var playAgainButton = new FlxButton(FlxG.width / 2 - 40, FlxG.height / 2 + 20, "Play again", playAgainCallback);

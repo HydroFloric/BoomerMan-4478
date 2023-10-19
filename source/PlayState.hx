@@ -43,7 +43,7 @@ class PlayState extends FlxState {
 			testPC2 = new PurplePC(0, 0, false);
 			playerList.add(testPC2);
 		}
-		else{
+		else if(PlayState.playerMode == 1){
 			testNPC = new BasicEnemy(0,0,true);
 			playerList.add(testNPC);
 		}
@@ -68,14 +68,14 @@ class PlayState extends FlxState {
 			for (obj in playerList) {
 				obj.setPosition(entity.x+(32-(obj.width/2)),entity.y+(64-(obj.height)));
 				
-				if(PlayState.playerMode == 2){
-					if(obj.playerNum == 0){
-						obj.x -= 64*2;
-					}
-					else if(obj.playerNum == 1){
-						obj.x += 64*2;
-					}
+				//Player spawning logic
+				if(obj.playerNum == 0){ //P1
+					obj.x -= 64*2;
 				}
+				else if(obj.playerNum == 1 || obj.playerNum == -1){ //P2 or Enemy
+					obj.x += 64*2;
+				}
+			
 			}
 		}
 	}
