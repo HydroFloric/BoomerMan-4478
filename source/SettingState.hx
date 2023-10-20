@@ -1,5 +1,7 @@
 package;
 
+import flixel.FlxSprite;
+import flixel.FlxSubState;
 import flixel.addons.ui.StrNameLabel;
 import flixel.FlxG;
 import flixel.FlxState;
@@ -9,7 +11,7 @@ import flixel.addons.ui.FlxUIDropDownMenu;
 import flixel.text.FlxText;
 import flixel.addons.ui.FlxSlider;
 
-class SettingState extends FlxState
+class SettingState extends FlxSubState
 {
     var titleText:FlxText;
     var backButton:FlxButton;
@@ -24,14 +26,22 @@ class SettingState extends FlxState
     var fullscreenCheck:Bool;
     var volume:Float;
     var selectedRes:String;
+    var background:FlxSprite;
 
     override public function create():Void
     {
         super.create();
+        FlxG.mouse.visible = true;
         selectedRes = "720x576";
         fullscreenCheck = false;
         volume = 100;
+        
         resolutionLabel = FlxUIDropDownMenu.makeStrIdLabelArray(["720x576", "800x600", "1024x768", "1280x720", "1920x1080"], true);
+        
+        background = new FlxSprite(0,0);
+        background = background.makeGraphic(FlxG.width,FlxG.height,0x000000);
+        background.screenCenter(XY);
+        add(background);
 
         // Title
         titleText = new FlxText(0, 20, FlxG.width, "Settings");
@@ -72,7 +82,7 @@ class SettingState extends FlxState
 
     function onBackButtonClick():Void
     {
-        FlxG.switchState(new GameStartState());
+        this.close();
     }
 
     function onResolutionChange(label:String):Void
@@ -101,15 +111,20 @@ class SettingState extends FlxState
     }
 }
 
-class PauseState extends FlxState
+class PauseState extends FlxSubState
 {
     var titleText:FlxText;
     var resumeButton:FlxButton;
     var settingButton:FlxButton;
     var quitButton:FlxButton;
+    var background:FlxSprite;
 
     override public function create():Void
     {
+        background = new FlxSprite(0,0);
+        background = background.makeGraphic(FlxG.width,FlxG.height,0x000000);
+        background.screenCenter(XY);
+        add(background);
         // Title
         titleText = new FlxText(0, 20, FlxG.width, "Paused");
         titleText.setFormat(null, 32, 0xffffff, "center");
@@ -130,12 +145,12 @@ class PauseState extends FlxState
 
     function onResumeButtonClick():Void
     {
-        FlxG.switchState(new PlayState());
+        this.close();
     }
 
     function onSettingButtonClick():Void
     {
-        FlxG.switchState(new SettingState());
+        openSubState(new SettingState());
     }
 
     function onQuitButtonClick():Void

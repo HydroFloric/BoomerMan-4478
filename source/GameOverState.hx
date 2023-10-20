@@ -3,8 +3,9 @@ package;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.ui.FlxButton;
-import flixel.util.FlxColor;
 import flixel.text.FlxText;
+
+import SettingState;
 
 class GameOverState extends FlxState
 {
@@ -50,6 +51,13 @@ class GameOverState extends FlxState
 		mainMenuButton.x += mainMenuButton.width/4;
 		mainMenuButton.updateHitbox();
         add(mainMenuButton);
+	}
+
+	override function update(elapsed:Float) {
+		super.update(elapsed);
+		if(FlxG.keys.justPressed.ESCAPE){
+			openSubState(new PauseState());
+		}
 	}
 
 	function playAgainCallback()

@@ -12,6 +12,7 @@ import flixel.math.FlxPoint;
 
 import Bomb;
 import Upgrade;
+import SettingState;
 
 
 class PlayState extends FlxState {
@@ -58,8 +59,8 @@ class PlayState extends FlxState {
 		map.loadEntities(placeEntities, "entities");
 
 		//hide mouse cursor
-		FlxG.mouse.visible = false;
-		FlxG.debugger.drawDebug = true;
+		//FlxG.mouse.visible = false;
+		//FlxG.debugger.drawDebug = true;
 
 		countdownTimer = new FlxTimer().start(3, spawnUpgrade);
 
@@ -67,6 +68,9 @@ class PlayState extends FlxState {
 	}
 
 	override public function update(elapsed:Float) {
+		if(FlxG.keys.justPressed.ESCAPE){
+			openSubState(new PauseState());
+		}
 		super.update(elapsed);
 		playerList.update(elapsed);
 		FlxG.collide(playerList, walls);

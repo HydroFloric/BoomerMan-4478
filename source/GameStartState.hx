@@ -5,6 +5,8 @@ import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 
+import SettingState;
+
 class GameStartState extends FlxState
 {
 	override public function create()
@@ -33,6 +35,12 @@ class GameStartState extends FlxState
             startButton2P.x += startButton2P.width/4;
             startButton2P.updateHitbox();
             add(startButton2P);
+        }
+        override function update(elapsed:Float) {
+                super.update(elapsed);
+                if(FlxG.keys.justPressed.ESCAPE){
+                    openSubState(new PauseState());
+                }
         }
     
         function startCall1P()
