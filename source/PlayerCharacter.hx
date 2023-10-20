@@ -114,6 +114,7 @@ class PlayerCharacter extends FlxSprite {
 		//Checks if the bomb has bombs left to place
 		if(this.bombsLeft > 0){
 			bombsLeft -= 1; //reduces one bomb from the player's bombs stock
+			FlxG.sound.play(AssetPaths.bombplace__wav);
 			FlxG.state.add(new Bomb(Math.floor(this.x/delta)*delta, Math.floor(this.y/delta)*delta, this)); //place a bomb in the tile the player is standing
 		}
 	}
@@ -121,7 +122,7 @@ class PlayerCharacter extends FlxSprite {
 	public function gotExploded(){ //the player get killed in this function, if it was hitten by the trigger of the explosion
 		this.kill();
 		if(PlayState.playerList.countLiving() <= 1){
-			
+			FlxG.sound.play(AssetPaths.death__wav);
 			FlxG.camera.fade(gameOver);
 		}
 		}

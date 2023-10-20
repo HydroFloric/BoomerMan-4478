@@ -129,6 +129,7 @@ class Explosion extends FlxSprite
         shockAnim.animation.add("vert", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], 20, true);
         shockAnim.animation.add("horizon", [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27], 20, true);
         FlxG.state.add(shockAnim);
+        FlxG.sound.play(AssetPaths.explosion__wav);
 
         //center does not have directional animation
         var centerGraphic:FlxSprite = new FlxSprite(x, y);

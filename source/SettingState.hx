@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxColor;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
 import flixel.addons.ui.StrNameLabel;
@@ -26,22 +27,17 @@ class SettingState extends FlxSubState
     var fullscreenCheck:Bool;
     var volume:Float;
     var selectedRes:String;
-    var background:FlxSprite;
 
     override public function create():Void
     {
         super.create();
-        FlxG.mouse.visible = true;
         selectedRes = "720x576";
         fullscreenCheck = false;
         volume = 100;
         
         resolutionLabel = FlxUIDropDownMenu.makeStrIdLabelArray(["720x576", "800x600", "1024x768", "1280x720", "1920x1080"], true);
-        
-        background = new FlxSprite(0,0);
-        background = background.makeGraphic(FlxG.width,FlxG.height,0x000000);
-        background.screenCenter(XY);
-        add(background);
+
+        bgColor = FlxColor.BLACK;
 
         // Title
         titleText = new FlxText(0, 20, FlxG.width, "Settings");
@@ -57,7 +53,10 @@ class SettingState extends FlxSubState
         resolutionText.setFormat(null, 16, 0xffffff, "left");
         add(resolutionText);
 
-        resolutionComboBox = new FlxUIDropDownMenu(FlxG.width / 2-30, 250, resolutionLabel, onPress -> selectedRes = resolutionComboBox.selectedLabel);
+        resolutionComboBox = new FlxUIDropDownMenu(FlxG.width / 2-30, 250, resolutionLabel, onPress -> {
+            selectedRes = resolutionComboBox.selectedLabel;
+            FlxG.sound.play(AssetPaths.menubutton__wav);});
+            
         resolutionComboBox.width = FlxG.width / 2;
         add(resolutionComboBox);
 
@@ -93,11 +92,13 @@ class SettingState extends FlxSubState
 
     function onFullscreenChange():Void
     {
+        FlxG.sound.play(AssetPaths.menubutton__wav);
         fullscreenCheck = !fullscreenCheck;
     }
 
     function onApplyButtonClick():Void
     {
+        FlxG.sound.play(AssetPaths.menubutton__wav);
         if(fullscreenCheck){
             fullscreenCheckBox.checked = true;
             FlxG.fullscreen = fullscreenCheck;
@@ -117,14 +118,13 @@ class PauseState extends FlxSubState
     var resumeButton:FlxButton;
     var settingButton:FlxButton;
     var quitButton:FlxButton;
-    var background:FlxSprite;
 
     override public function create():Void
     {
-        background = new FlxSprite(0,0);
-        background = background.makeGraphic(FlxG.width,FlxG.height,0x000000);
-        background.screenCenter(XY);
-        add(background);
+        FlxG.timeScale = 0;
+        bgColor = FlxColor.BLACK;
+        FlxG.mouse.visible = true;
+
         // Title
         titleText = new FlxText(0, 20, FlxG.width, "Paused");
         titleText.setFormat(null, 32, 0xffffff, "center");
@@ -142,14 +142,17 @@ class PauseState extends FlxSubState
         quitButton = new FlxButton(FlxG.width / 2 - 40, 180, "Quit", onQuitButtonClick);
         add(quitButton);
     }
-
+ 
     function onResumeButtonClick():Void
     {
+        FlxG.mouse.visible = false;
+        FlxG.timeScale = 1;
         this.close();
     }
 
     function onSettingButtonClick():Void
     {
+        FlxG.sound.play(AssetPaths.menubutton__wav);
         openSubState(new SettingState());
     }
 

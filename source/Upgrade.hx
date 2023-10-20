@@ -52,6 +52,7 @@ class Upgrade extends FlxSprite
         }
         PlayState.upgrades;
         PlayState.upgrades.splice(PlayState.upgrades.indexOf(this), 1);
+        FlxG.sound.play(AssetPaths.pickup__wav);
         this.destroy();
 
     }

@@ -59,7 +59,7 @@ class PlayState extends FlxState {
 		map.loadEntities(placeEntities, "entities");
 
 		//hide mouse cursor
-		//FlxG.mouse.visible = false;
+		FlxG.mouse.visible = false;
 		//FlxG.debugger.drawDebug = true;
 
 		countdownTimer = new FlxTimer().start(3, spawnUpgrade);
