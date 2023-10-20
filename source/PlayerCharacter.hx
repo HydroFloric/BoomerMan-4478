@@ -230,10 +230,8 @@ class BasicEnemy extends PlayerCharacter{
         }
 
 		//Enemies should attempt to keep a safe distance from bombs
-		//TODO: AI keeps getting stuck in corners like an idiot, fix later
 		for(obj in PlayState.bombs){
 			if(obj!= null && this!= null){
-
 
 				if((this.x < obj.x + 64*obj.bombRange + this.width && this.x > obj.x || this.x > obj.x + 64*obj.bombRange + this.width && this.x < obj.x)
 					 &&( this.y < obj.y + 64*obj.bombRange + this.height && this.y > obj.y || this.y > obj.y + 64*obj.bombRange + this.height && this.y < obj.y)){

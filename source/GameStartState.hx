@@ -15,7 +15,7 @@ class GameStartState extends FlxState
 
             //bring back mouse cursor
             FlxG.mouse.visible = true;
-
+            FlxG.sound.volume = 0.50;
             var quitButton:FlxButton;
     
             // Create the text games title
