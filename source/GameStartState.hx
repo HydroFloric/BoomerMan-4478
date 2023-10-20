@@ -15,6 +15,8 @@ class GameStartState extends FlxState
 
             //bring back mouse cursor
             FlxG.mouse.visible = true;
+
+            FlxG.timeScale = 1;
             FlxG.sound.volume = 0.50;
             var quitButton:FlxButton;
     

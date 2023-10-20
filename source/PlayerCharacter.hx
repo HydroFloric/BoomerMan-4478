@@ -235,16 +235,16 @@ class BasicEnemy extends PlayerCharacter{
 
 				if((this.x < obj.x + 64*obj.bombRange + this.width && this.x > obj.x || this.x > obj.x + 64*obj.bombRange + this.width && this.x < obj.x)
 					 &&( this.y < obj.y + 64*obj.bombRange + this.height && this.y > obj.y || this.y > obj.y + 64*obj.bombRange + this.height && this.y < obj.y)){
-				if(obj.y < this.y){
+				if(obj.y + 32 < this.y){
 					this.velocity.y = moveSpeed;
 				}
-				else if(obj.y > this.y){
+				else if(obj.y + 32 > this.y){
 					this.velocity.x = -moveSpeed;
 				}
-				if(obj.x < this.x){
+				if(obj.x - 32 < this.x){
 					this.velocity.x = moveSpeed;
 				}
-				else if(obj.x > this.x){
+				else if(obj.x + 32 > this.x){
 					this.velocity.x = -moveSpeed;
 				}
 			}
