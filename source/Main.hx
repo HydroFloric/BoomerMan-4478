@@ -1,6 +1,4 @@
 package;
-
-import SettingState.PauseState;
 import flixel.FlxGame;
 import openfl.display.Sprite;
 

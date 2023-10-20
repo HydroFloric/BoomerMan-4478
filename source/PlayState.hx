@@ -1,6 +1,5 @@
 package;
 
-import flixel.FlxObject;
 import PlayerCharacter;
 import flixel.FlxG;
 import flixel.FlxState;
@@ -10,8 +9,6 @@ import flixel.group.FlxGroup;
 import flixel.util.FlxTimer;
 import Math;
 import flixel.math.FlxPoint;
-
-
 
 import Bomb;
 import Upgrade;
