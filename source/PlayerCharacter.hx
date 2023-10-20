@@ -20,7 +20,7 @@ class PlayerCharacter extends FlxSprite {
 	public var playerNum:Int; //When multiple players are active this differentiates them.
 							 //Defaults to -1 for enemies and parent class PlayerCharacter
 
-	var moveSpeed:Float; // MoveSpeed
+	public var moveSpeed:Float; // MoveSpeed
 	var delta:Int = 64;
 
 	// constructor
@@ -231,7 +231,11 @@ class BasicEnemy extends PlayerCharacter{
 		//Enemies should attempt to keep a safe distance from bombs
 		//TODO: AI keeps getting stuck in corners like an idiot, fix later
 		for(obj in PlayState.bombs){
-			if(FlxMath.distanceBetween(obj, this) <= (64*bombRange) + this.width){
+			if(obj!= null && this!= null){
+
+
+				if((this.x < obj.x + 64*obj.bombRange + this.width && this.x > obj.x || this.x > obj.x + 64*obj.bombRange + this.width && this.x < obj.x)
+					 &&( this.y < obj.y + 64*obj.bombRange + this.height && this.y > obj.y || this.y > obj.y + 64*obj.bombRange + this.height && this.y < obj.y)){
 				if(obj.y < this.y){
 					this.velocity.y = moveSpeed;
 				}
@@ -244,6 +248,7 @@ class BasicEnemy extends PlayerCharacter{
 				else if(obj.x > this.x){
 					this.velocity.x = -moveSpeed;
 				}
+			}
 			}
 		}
     

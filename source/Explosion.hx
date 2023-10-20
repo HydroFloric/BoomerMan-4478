@@ -10,11 +10,12 @@ import PlayState;
 import flixel.math.FlxPoint;
 import flixel.util.FlxTimer;
 
-var trigger:FlxSprite = new FlxSprite();
-var myPoint:FlxPoint = new FlxPoint();
+
 
 class Explosion extends FlxSprite
 {
+    var trigger:FlxSprite = new FlxSprite();
+    var myPoint:FlxPoint = new FlxPoint();
 
 	public function new(x:Float, y:Float, remainingRange:Int, direction:String = "firstCall")
 	{

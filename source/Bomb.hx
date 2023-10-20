@@ -12,7 +12,7 @@ class Bomb extends FlxSprite
 
 	public var bombOwner:PlayerCharacter;
 
-
+	public var bombRange:Int;
 
 	// constructor
 	public function new(x:Float, y:Float, player:PlayerCharacter)
@@ -23,8 +23,10 @@ class Bomb extends FlxSprite
 		width = 64;
 		height = 64;
 		offset.set(-16, -16);
+		
 
 		bombOwner = player;
+		this.bombRange = player.bombRange;
 		
 		animation.add("Explode", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], 16, false);
 		PlayState.bombs.push(this);

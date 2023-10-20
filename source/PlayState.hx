@@ -7,8 +7,14 @@ import flixel.FlxState;
 import flixel.addons.editors.ogmo.FlxOgmo3Loader;
 import flixel.tile.FlxTilemap;
 import flixel.group.FlxGroup;
-import Bomb;
+import flixel.util.FlxTimer;
+import Math;
+import flixel.math.FlxPoint;
 
+
+
+import Bomb;
+import Upgrade;
 
 
 class PlayState extends FlxState {
@@ -19,9 +25,12 @@ class PlayState extends FlxState {
 	private var testNPC:BasicEnemy;
 	public static var walls:FlxTilemap;
 	public static var bombs:Array<Bomb> = [];
+	public static var upgrades:Array<Upgrade> = [];
+	private var countdownTimer:FlxTimer;
+
 	public static var playerList:FlxTypedGroup<PlayerCharacter> = null; //Group containing active player objects
 	var toAddMenu:Bool = false;  // Flag to determine whether to add the game over menu
-
+	var myPoint:FlxPoint = new FlxPoint();
 	override public function create() {
 		super.create();
 
@@ -54,12 +63,17 @@ class PlayState extends FlxState {
 		//hide mouse cursor
 		FlxG.mouse.visible = false;
 		FlxG.debugger.drawDebug = true;
+
+		countdownTimer = new FlxTimer().start(3, spawnUpgrade);
+
+
 	}
 
 	override public function update(elapsed:Float) {
 		super.update(elapsed);
 		playerList.update(elapsed);
 		FlxG.collide(playerList, walls);
+		checkUpgradeOverlaps();
 	}
 
 	// function to place entities according to entity layer from tilemap
@@ -79,6 +93,29 @@ class PlayState extends FlxState {
 			}
 		}
 	}
-	
 
+	function spawnUpgrade(_){
+		myPoint.y = Math.floor(Math.random() * walls.height+1);
+		myPoint.x = Math.floor(Math.random() * walls.width+1);
+
+		if(upgrades.length < 3){
+			if(walls.getTileByIndex(walls.getTileIndexByCoords(myPoint)) == 2){
+				add(new Upgrade(Math.floor(myPoint.x/64)*64, Math.floor(myPoint.y/64)*64,Math.floor(Math.random()*3)));
+
+			}
+		}
+		countdownTimer = new FlxTimer().start(5, spawnUpgrade);
+	}
+	
+	function checkUpgradeOverlaps(){
+		for(upg in upgrades){
+			for (player in playerList){
+				if(Std.int(upg.x/64) == Std.int(player.x/64) && Std.int(player.y/64) == Std.int(upg.y/64)){
+					upg.grabbed(player);
+				}
+			}
+		}
+	}
 }
+
+
